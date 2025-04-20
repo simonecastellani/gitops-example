@@ -1,0 +1,126 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argocd
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-server
+  namespace: argocd
+spec:
+  selector:
+    matchLabels:
+      app: argocd-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: argocd-server
+    spec:
+      containers:
+      - name: argocd-server
+        image: quay.io/argoproj/argocd:v2.7.5
+        args:
+          - /usr/local/bin/argocd-server
+          - --insecure
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 250m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: argocd-server
+  namespace: argocd
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+  selector:
+    app: argocd-server
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-repo-server
+  namespace: argocd
+spec:
+  selector:
+    matchLabels:
+      app: argocd-repo-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: argocd-repo-server
+    spec:
+      containers:
+      - name: argocd-repo-server
+        image: quay.io/argoproj/argocd:v2.7.5
+        command: ["/usr/local/bin/argocd-repo-server"]
+        resources:
+          requests:
+            cpu: 250m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: argocd-application-controller
+  namespace: argocd
+spec:
+  selector:
+    matchLabels:
+      app: argocd-application-controller
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: argocd-application-controller
+    spec:
+      containers:
+      - name: argocd-application-controller
+        image: quay.io/argoproj/argocd:v2.7.5
+        command: ["/usr/local/bin/argocd-application-controller"]
+        resources:
+          requests:
+            cpu: 250m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: argocd-repo-server
+  namespace: argocd
+spec:
+  ports:
+  - port: 8081
+    targetPort: 8081
+  selector:
+    app: argocd-repo-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: argocd-application-controller
+  namespace: argocd
+spec:
+  ports:
+  - port: 8082
+    targetPort: 8082
+  selector:
+    app: argocd-application-controller

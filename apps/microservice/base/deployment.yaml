@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-microservice
+  labels:
+    app: example-microservice
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: example-microservice
+  template:
+    metadata:
+      labels:
+        app: example-microservice
+    spec:
+      containers:
+      - name: microservice
+        image: nginx:latest  # Using nginx as a simple example
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: 200m
+            memory: 256Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi

@@ -1,0 +1,61 @@
+gitops-example
+├── clusters
+│   ├── kind
+│   │   ├── apps
+│   │   │   ├── argocd.yaml
+│   │   │   ├── dex.yaml
+│   │   │   ├── ingress-nginx.yaml
+│   │   │   ├── kubernetes-dashboard.yaml
+│   │   │   └── microservice.yaml
+│   │   └── infrastructure
+│   │       └── kind-config.yaml
+│   └── lab
+│       ├── apps
+│       │   ├── argocd.yaml
+│       │   ├── dex.yaml
+│       │   ├── ingress-nginx.yaml
+│       │   ├── kubernetes-dashboard.yaml
+│       │   └── microservice.yaml
+│       └── infrastructure
+│           └── cluster-config.yaml
+├── apps
+│   ├── argocd
+│   │   └── base
+│   │       └── install.yaml
+│   ├── dex
+│   │   └── base
+│   │       └── install.yaml
+│   ├── ingress-nginx
+│   │   └── base
+│   │       └── install.yaml
+│   ├── kubernetes-dashboard
+│   │   └── base
+│   │       └── install.yaml
+│   └── microservice
+│       └── base
+│           ├── deployment.yaml
+│           └── service.yaml
+├── .gitignore
+├── README.md
+└── clusters
+    └── lab
+        └── apps
+            └── microservice.yaml
+                └── apiVersion: argoproj.io/v1alpha1
+                └── kind: Application
+                └── metadata:
+                    └── name: microservice
+                    └── namespace: argocd
+                └── spec:
+                    └── project: default
+                    └── source:
+                        └── repoURL: https://github.com/your-org/gitops-example.git
+                        └── targetRevision: HEAD
+                        └── path: apps/microservice/base
+                    └── destination:
+                        └── server: https://kubernetes.default.svc
+                        └── namespace: default
+                    └── syncPolicy:
+                        └── automated:
+                            └── prune: true
+                            └── selfHeal: true
