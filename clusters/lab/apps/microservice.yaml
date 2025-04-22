@@ -49,7 +49,7 @@ gitops-example
                 └── spec:
                     └── project: default
                     └── source:
-                        └── repoURL: https://github.com/your-org/gitops-example.git
+                        └── repoURL: https://github.com/simonecastellani/gitops-example.git
                         └── targetRevision: HEAD
                         └── path: apps/microservice/base
                     └── destination:
